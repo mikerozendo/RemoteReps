@@ -1,11 +1,4 @@
 ﻿{
-    "Logging": {
-        "LogLevel": {
-            "Default": "Debug",
-            "System": "Information",
-            "Microsoft": "Information"
-        }
-    },
     "RtspSourceUrl": "http://pendelcam.kip.uni-heidelberg.de/mjpg/video.mjpg",
     "WebSocketUri": "ws://localhost:5260/hubs/image-receiver"
 }
