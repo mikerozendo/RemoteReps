@@ -32,7 +32,7 @@ This hub contains a Method to be invoked in order to get the frame saved into th
 
 The second one is just a C# Console Application, it was crated to just receive frames from a RTSP connection, send the using websockets with SignalR.Client package and then, just wait a little to continue receiving the frames.
 
-The RTSP source is uri is configured under the configuration.json that inside RemoteReps.RTPSListener.Console's root file system, that has Websocket source path configured as well.
+The RTSP source uri is configured under the configuration.json that is inside RemoteReps.RTPSListener.Console's root file system, that has Websocket source path configured as well.
 
 ```json
 {
