@@ -1,11 +1,11 @@
-# Project Title
+# Remote Reps Buffer Hub
 
-# Prerequisites
+## Prerequisites
 
-### .NET 8
+#### .NET 8
 **.NET 8**: Make sure to install the latest stable version of .NET 8. You can download it from the official [.NET website](https://dotnet.microsoft.com/download/dotnet/8.0).
 
-### FFmpeg Intallation
+#### FFmpeg Intallation
 1. **FFmpeg**: Download FFmpeg from the following link: [FFmpeg Builds](https://www.gyan.dev/ffmpeg/builds/). Follow the instructions provided on the site to install FFmpeg on your machine.
 ![img.png](img.png)
 
