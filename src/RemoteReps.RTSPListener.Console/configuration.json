@@ -1,0 +1,10 @@
+﻿{
+    "Logging": {
+        "LogLevel": {
+            "Default": "Debug",
+            "System": "Information",
+            "Microsoft": "Information"
+        }
+    },
+    "RtspSourceUrl": "ffmpeg -i rtsp://localhost:8554/live -vf fps=1/1 frames/output%d.jpg"
+}
