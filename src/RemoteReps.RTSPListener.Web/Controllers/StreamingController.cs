@@ -1,18 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
+using RemoteReps.RTSPListener.Web.Repositories;
 
 namespace RemoteReps.RTSPListener.Web.Controllers;
 
-public sealed class StreamingController : Controller
+public sealed class StreamingController(
+    SignalRHubRepository signalRHubRepository,
+    ILogger<StreamingController> logger)
+    : Controller
 {
-    private readonly ILogger<StreamingController> _logger;
-
-    public StreamingController(ILogger<StreamingController> logger)
-    {
-        _logger = logger;
-    }
-
+    [HttpPost]
+    [Route("streaming-handler")]
+    public async Task SendBufferToHub([FromBody] byte[] buffer)
+        => await signalRHubRepository.SendBufferAsync(buffer);
+    
     public IActionResult Index()
-    {
-        return View();
-    }
+        => View();
 }

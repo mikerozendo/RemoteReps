@@ -10,4 +10,20 @@
       <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.10" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Repositories\Interfaces\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Repositories\Interfaces\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Repositories\Interfaces\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Repositories\Interfaces\**" />
+    </ItemGroup>
+
 </Project>

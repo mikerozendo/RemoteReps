@@ -7,8 +7,9 @@ namespace RemoteReps.ImageReceiver.WebApi.Hubs;
 /// </summary>
 public sealed class ImageReceiverHub : Hub
 {
-    public override async Task OnConnectedAsync()
+    public async Task OnReceivedBufferAsync()
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, "ImageStores");
+        await Task.Delay(1);
+        throw new NotImplementedException();
     }
 }
