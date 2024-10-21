@@ -6,5 +6,6 @@
             "Microsoft": "Information"
         }
     },
-    "RtspSourceUrl": "ffmpeg -i rtsp://localhost:8554/live -vf fps=1/1 frames/output%d.jpg"
+    "RtspSourceUrl": "http://pendelcam.kip.uni-heidelberg.de/mjpg/video.mjpg",
+    "WebSocketUri": "ws://localhost:5260/hubs/image-receiver"
 }

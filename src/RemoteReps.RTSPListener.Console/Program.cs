@@ -1,39 +1,53 @@
-﻿using LibVLCSharp.Shared;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using RemoteReps.RTSPListener.Console;
+using Xabe.FFmpeg;
+using Xabe.FFmpeg.Downloader;
 
-var configurationBuilder = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("configuration.json", optional: false)
+
+await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
+var configuration = ConfigurationBuilderFactory.GetConfiguration();
+var websocketUri = new Uri(configuration.webSocketUri);
+var outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "temp_frames");
+Directory.CreateDirectory(outputDirectory);
+
+var connection = new HubConnectionBuilder()
+    .WithUrl(websocketUri)
     .Build();
 
-var rtspSourceUrl = configurationBuilder.GetSection("RtspSourceUrl").Value;
-ArgumentNullException.ThrowIfNull(rtspSourceUrl, nameof(rtspSourceUrl));
-await StartRtspClient(rtspSourceUrl);
-
-
-async Task StartRtspClient(string rtspSourceUrl)
+try
 {
-    Core.Initialize();
-    
-    using var libVlc = new LibVLC();
-    using var mediaPlayer = new MediaPlayer(libVlc);
-    using var media = new Media(libVlc, rtspSourceUrl, FromType.FromLocation);
-
-    mediaPlayer.Media = media;
-    mediaPlayer.EncounteredError += (sender, e) =>
+    await connection.StartAsync();
+    while (true)
     {
-        Console.WriteLine("An error has occurred while trying to download the RTSP stream.");
-    };
-
-    mediaPlayer.Playing += (sender, e) => { Console.WriteLine("Starting to download the RTSP stream."); };
-    mediaPlayer.Stopped += (sender, e) => { Console.WriteLine("Stream download has stopped."); };
-
-    mediaPlayer.Play();
-
-    Console.WriteLine("Press enter to stop");
-    Console.ReadLine();
-
-    mediaPlayer.Stop();
-    await Task.CompletedTask;
+        await Task.Delay(1000);
+        await SendBufferAsync();
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error: {ex.Message}");
+}
+finally
+{
+    if (Directory.Exists(outputDirectory))
+        Directory.Delete(outputDirectory, true);
 }
 
+async Task SendBufferAsync()
+{
+    var ffmpeg = FFmpeg.Conversions.New()
+        .AddParameter($"-i {configuration.sourceStreamUrl}")
+        .AddParameter("-vf fps=1")
+        .SetOutput(Path.Combine(outputDirectory, $"{Guid.NewGuid()}-frame.jpg"));
+
+    var conversion = ffmpeg.Start();
+    var files = Directory.GetFiles(outputDirectory, "*.jpg");
+    await Task.Delay(200);
+
+    var invokedTasks = files.Select(async x =>
+    {
+        var fileBytes = await File.ReadAllBytesAsync(x);
+        File.Delete(x);
+        await connection.InvokeAsync("OnReceivedBufferAsync", fileBytes);
+    }).ToList();
+}

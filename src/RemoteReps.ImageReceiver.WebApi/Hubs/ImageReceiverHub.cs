@@ -7,9 +7,12 @@ namespace RemoteReps.ImageReceiver.WebApi.Hubs;
 /// </summary>
 public sealed class ImageReceiverHub : Hub
 {
-    public async Task OnReceivedBufferAsync()
+    public async Task OnReceivedBufferAsync(byte[] buffer)
     {
-        await Task.Delay(1);
-        throw new NotImplementedException();
+        var outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "received-images");
+        Directory.CreateDirectory(outputDirectory);
+        var fileName = Path.Combine(outputDirectory, $"{Guid.NewGuid()}.jpg");
+        await File.WriteAllBytesAsync(fileName, buffer);
+        await Task.CompletedTask;
     }
 }
